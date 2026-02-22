@@ -43,7 +43,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(15, 23, 42, 0.7);
+            background: rgba(15, 23, 42, 0.85); /* Un poco más opaco para evitar mezcla con celulares */
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border-bottom: 1px solid rgba(51, 65, 85, 0.5);
@@ -97,15 +97,16 @@
             min-height: 100vh;
             display: flex;
             align-items: center;
-            padding: 100px 5% 40px;
+            padding: 120px 5% 40px;
             max-width: 1300px;
             margin: 0 auto;
-            gap: 20px;
+            gap: 40px;
         }
 
         .hero-content {
             flex: 1;
             max-width: 600px;
+            z-index: 10; /* Para evitar superposiciones con los fondos */
         }
 
         .hero-badge {
@@ -135,6 +136,8 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            position: relative;
+            z-index: -1;
         }
 
         .hero p {
@@ -145,13 +148,11 @@
             line-height: 1.7;
         }
 
-        /* ----------------------------------------------------
-           NUEVO SISTEMA DE POSICIONAMIENTO VISUAL (INFALIBLE)
-           ---------------------------------------------------- */
+        /* CONFIGURACIÓN DESKTOP - Con position absolute para el efecto 3D */
         .hero-visuals {
             flex: 1;
             position: relative;
-            height: 700px; /* Altura fija para evitar recortes */
+            height: 700px;
             perspective: 1200px;
             display: flex;
             align-items: center;
@@ -159,6 +160,7 @@
         }
 
         .phone-mockup {
+            /* En escritorio usan absolute para traslaparse en 3D */
             position: absolute;
             top: 50%;
             left: 50%;
@@ -167,8 +169,8 @@
             border: 8px solid #2B3648;
             box-shadow: 0 0 0 2px #475569, 0 30px 60px -15px rgba(0, 0, 0, 0.6);
             overflow: hidden;
-            width: 280px;
-            height: 606px;
+            width: 280px;  /* Ancho estricto */
+            height: 606px; /* Altura estricta */
         }
 
         .phone-mockup img {
@@ -178,13 +180,11 @@
             display: block;
         }
 
-        /* En Desktop: Phone 1 va desplazado a la izquierda */
         .phone-1 {
             z-index: 2;
             animation: float-desktop 6s ease-in-out infinite;
         }
 
-        /* En Desktop: Phone 2 va desplazado a la derecha y al fondo */
         .phone-2 {
             z-index: 1;
             opacity: 0.6;
@@ -192,7 +192,6 @@
             animation: float-desktop-bg 8s ease-in-out infinite alternate;
         }
 
-        /* Animaciones con TranslateX y Y anclados al centro absoluto */
         @keyframes float-desktop {
             0% { transform: translate(-75%, -50%) rotateY(-15deg) rotateX(5deg) translateY(0px); }
             50% { transform: translate(-75%, -50%) rotateY(-15deg) rotateX(5deg) translateY(-15px); }
@@ -205,12 +204,12 @@
             100% { transform: translate(-10%, -50%) rotateY(-15deg) rotateX(5deg) scale(0.85) translateZ(-100px) translateY(0px); }
         }
 
-        /* ---------------------------------------------------- */
-
         .presentation-banner {
             max-width: 1200px;
-            margin: 0 auto 100px;
+            margin: 0 auto 80px;
             padding: 0 5%;
+            position: relative; /* Evita mezclas raras */
+            z-index: 5;
         }
 
         .presentation-banner img {
@@ -243,50 +242,65 @@
         }
 
         /* ----------------------------------------------------
-           RESPONSIVE MOBILE E INFALIBLE
+           LA SOLUCIÓN PARA MÓVILES (Devolver al flujo, quitar Absolute)
            ---------------------------------------------------- */
         @media (max-width: 968px) {
             .hero {
                 flex-direction: column;
                 text-align: center;
-                padding-top: 120px;
+                padding-top: 100px; /* Reducimos el padding alto en movil */
+                gap: 20px; /* Espacio exacto entre el texto y el celular */
                 min-height: auto;
             }
             .hero-content {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                margin-bottom: 20px;
+                margin-bottom: 20px; /* Respetar margen vertical */
             }
+            
+            /* El contenedor visual pierde su altura rigida y solo abarca lo que debe */
             .hero-visuals {
                 width: 100%;
-                height: 650px;
+                height: auto; 
                 perspective: none; 
+                margin-bottom: 40px; /* Espacio antes de la siguiente sección */
+                padding: 20px 0; /* Padding protector */
             }
             
-            /* Phone 2 desaparece */
             .phone-2 { display: none; }
             
-            /* Phone 1 se ancla EXACTAMENTE en el medio, reduciendo su tamaño levemente si es necesario */
+            /* LA CLAVE: El celular principal se vuelve Relative y centrado con Flexbox/Margin */
             .phone-1 { 
-                animation: float-mobile 6s ease-in-out infinite;
+                position: relative; /* IMPORTANTE: Vuelve al flujo normal, ya no flota sobre nada */
+                top: auto;          /* Quitamos variables de Absolute */
+                left: auto;         
+                margin: 0 auto;     /* Centrado horizontal automático */
+                transform: none;    /* Limpiamos la basura del layout web */
+                
                 box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+                animation: float-mobile 6s ease-in-out infinite;
+                z-index: 5;
             }
             
+            /* La animación ya no usa Translate alocados, solo sube y baja un poco */
             @keyframes float-mobile {
-                0% { transform: translate(-50%, -50%) scale(0.9) translateY(0px) rotateY(0) rotateX(0); }
-                50% { transform: translate(-50%, -50%) scale(0.9) translateY(-15px) rotateY(0) rotateX(0); }
-                100% { transform: translate(-50%, -50%) scale(0.9) translateY(0px) rotateY(0) rotateX(0); }
+                0% { transform: translateY(0px); }
+                50% { transform: translateY(-15px); }
+                100% { transform: translateY(0px); }
             }
         }
         
-        /* Ajuste para pantallas móviles MUY pequeñas (ej. iPhone SE) */
         @media (max-width: 400px) {
-            .hero-visuals { height: 550px; }
+            .phone-1 {
+                /* Para celulares muy chiquitos como el iPhone SE */
+                transform-origin: top center;
+                transform: scale(0.85); /* En lugar de absolute lo achicamos proporcionalmente */
+            }
             @keyframes float-mobile {
-                0% { transform: translate(-50%, -50%) scale(0.75) translateY(0px); }
-                50% { transform: translate(-50%, -50%) scale(0.75) translateY(-15px); }
-                100% { transform: translate(-50%, -50%) scale(0.75) translateY(0px); }
+                0% { transform: scale(0.85) translateY(0px); }
+                50% { transform: scale(0.85) translateY(-15px); }
+                100% { transform: scale(0.85) translateY(0px); }
             }
         }
     </style>
@@ -314,14 +328,15 @@
             <div class="phone-mockup phone-2">
                 <img src="https://i.imgur.com/TpAKxl7.jpeg" alt="Dashboard EnCancha">
             </div>
-            <!-- Celular Frontal -->
+            <!-- Celular Frontal (Relative en Móvil) -->
             <div class="phone-mockup phone-1">
                 <img src="https://i.imgur.com/v3knxN1.jpeg" alt="Búsqueda de Canchas EnCancha">
             </div>
         </div>
     </section>
 
-    <section class="presentation-banner reveal">
+    <!-- Agregue algo de margen superior en móvil a esta sección por si acaso -->
+    <section class="presentation-banner reveal" style="margin-top: 20px;">
         <img src="https://i.imgur.com/pqXWThB.jpeg" alt="Presentación EnCancha">
     </section>
 
