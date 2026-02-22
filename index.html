@@ -1,26 +1,355 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>EnCancha - Próximamente</title>
-  <style>
-    body { 
-      font-family: Arial; 
-      display: flex; 
-      justify-content: center; 
-      align-items: center; 
-      height: 100vh; 
-      margin: 0;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-    }
-    h1 { font-size: 3rem; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EnCancha - Próximamente</title>
+    
+    <!-- Fuentes: Montserrat (Títulos) e Inter (Cuerpo) igual que en Type.kt -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@600;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Variables extraídas directamente de tu archivo Color.kt (Dark Mode) */
+            --bg-main: #0F172A;
+            --bg-surface: #1E293B;
+            --primary: #CCFF00;
+            --text-primary: #F1F5F9;
+            --text-secondary: #94A3B8;
+            --border-subtle: #334155;
+            --gradient-start: #CCFF00;
+            --gradient-end: #00E5FF;
+        }
+
+        /* Reseteo básico y base */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            
+            /* Resplandores de fondo sutiles Cyberpunk */
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 229, 255, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(204, 255, 0, 0.05) 0%, transparent 40%);
+        }
+
+        h1, h2, h3, .font-heading {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Navegación Glassmorphism */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .logo img {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+        }
+
+        /* Botón estilo Cyberpunk Gradient */
+        .btn-primary {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            color: var(--bg-main);
+            padding: 10px 24px;
+            border-radius: 100px;
+            text-decoration: none;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(204, 255, 0, 0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 229, 255, 0.4);
+        }
+
+        .btn-large {
+            display: inline-block;
+            padding: 16px 40px;
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 120px 5% 40px;
+            max-width: 1300px;
+            margin: 0 auto;
+            gap: 40px;
+        }
+
+        .hero-content {
+            flex: 1;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(204, 255, 0, 0.1);
+            color: var(--primary);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            border: 1px solid rgba(204, 255, 0, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4.2rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            letter-spacing: -1px;
+        }
+
+        .hero h1 span {
+            /* Texto con gradiente */
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            margin-bottom: 35px;
+            max-width: 480px;
+            line-height: 1.7;
+        }
+
+        /* Contenedor Visual (Imágenes) */
+        .hero-visuals {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            position: relative;
+            height: 650px;
+            perspective: 1000px; /* Para el efecto 3D */
+        }
+
+        /* Truco para enmarcar las imágenes como celulares */
+        .phone-mockup {
+            position: absolute;
+            background: var(--bg-surface);
+            border-radius: 36px;
+            border: 8px solid #2B3648; /* Borde interior oscuro */
+            box-shadow: 0 0 0 2px #475569, 0 30px 60px -15px rgba(0, 0, 0, 0.6); /* Borde metálico exterior + Sombra */
+            overflow: hidden;
+            width: 280px;
+            height: 606px; /* Proporción 19.5:9 */
+            transition: transform 0.5s ease;
+        }
+
+        .phone-mockup img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Aplicando 3D a la imagen frontal */
+        .phone-1 {
+            z-index: 2;
+            right: 40%;
+            transform: rotateY(-15deg) rotateX(5deg) translateY(0);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Aplicando 3D a la imagen trasera (desenfocada/oscura visualmente) */
+        .phone-2 {
+            z-index: 1;
+            right: 15%;
+            transform: rotateY(-15deg) rotateX(5deg) scale(0.9) translateX(120px) translateZ(-100px);
+            opacity: 0.7;
+            animation: float 8s ease-in-out infinite alternate;
+            filter: blur(1px) brightness(0.8);
+        }
+
+        /* Banner de Presentación Full Width */
+        .presentation-banner {
+            max-width: 1200px;
+            margin: 0 auto 100px;
+            padding: 0 5%;
+        }
+
+        .presentation-banner img {
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-subtle);
+            transition: transform 0.3s ease;
+        }
+        
+        .presentation-banner img:hover {
+            transform: scale(1.01);
+        }
+
+        /* Footer Básico */
+        footer {
+            text-align: center;
+            padding: 40px 5%;
+            border-top: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* JS Helper Classes (Animaciones on Scroll) */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Keyframes para flotar (Efecto celular) */
+        @keyframes float {
+            0% { transform: translateY(0px) rotateY(-15deg) rotateX(5deg); }
+            50% { transform: translateY(-15px) rotateY(-15deg) rotateX(5deg); }
+            100% { transform: translateY(0px) rotateY(-15deg) rotateX(5deg); }
+        }
+
+        /* Adaptabilidad para Teléfonos (Mobile) */
+        @media (max-width: 968px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding-top: 130px;
+            }
+            .hero-content {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin-bottom: 40px;
+            }
+            .hero-visuals {
+                width: 100%;
+                height: 550px;
+                perspective: none; /* Quitamos 3D brutal en móviles */
+            }
+            .phone-1 { 
+                right: 50%; 
+                transform: translateX(50%) scale(0.95); 
+                animation: float-mobile 6s ease-in-out infinite;
+                box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            }
+            .phone-2 { 
+                display: none; /* Ocultamos el segundo celular en pantallas chicas */
+            }
+            
+            @keyframes float-mobile {
+                0% { transform: translateX(50%) scale(0.95) translateY(0); }
+                50% { transform: translateX(50%) scale(0.95) translateY(-15px); }
+                100% { transform: translateX(50%) scale(0.95) translateY(0); }
+            }
+        }
+    </style>
 </head>
 <body>
-  <div>
-    <h1>🏟️ EnCancha</h1>
-    <p>Próximamente...</p>
-  </div>
+
+    <!-- Menú de Navegación -->
+    <nav>
+        <a href="#" class="logo">
+            <img src="https://i.imgur.com/5kSCWCA.png" alt="EnCancha Icono">
+            Athlon
+        </a>
+        <a href="#" class="btn-primary">Próximamente</a>
+    </nav>
+
+    <!-- Sección Principal (Hero) -->
+    <section class="hero">
+        <div class="hero-content reveal">
+            <div class="hero-badge font-heading">Lanzamiento Oficial 2026</div>
+            <h1>Tu próximo partido,<br>a un <span>toque</span> de distancia.</h1>
+            <p>La experiencia definitiva para encontrar, reservar y jugar en las mejores canchas. Diseño oscuro, rápido y pensado para verdaderos deportistas.</p>
+            <a href="#" class="btn-primary btn-large">Disponible pronto en Android</a>
+        </div>
+        
+        <!-- Contenedor Visual con los Mocks de Celulares 3D -->
+        <div class="hero-visuals reveal" style="transition-delay: 0.2s;">
+            <!-- Celular Trasero -->
+            <div class="phone-mockup phone-2">
+                <img src="https://i.imgur.com/TpAKxl7.jpeg" alt="Dashboard EnCancha">
+            </div>
+            <!-- Celular Principal Frente -->
+            <div class="phone-mockup phone-1">
+                <img src="https://i.imgur.com/v3knxN1.jpeg" alt="Búsqueda de Canchas EnCancha">
+            </div>
+        </div>
+    </section>
+
+    <!-- Presentación Amplia -->
+    <section class="presentation-banner reveal">
+        <img src="https://i.imgur.com/pqXWThB.jpeg" alt="Presentación EnCancha">
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Athlon / EnCancha. Todos los derechos reservados.</p>
+        <p style="margin-top: 8px; font-size: 0.8rem; opacity: 0.6;">Diseñado con mentalidad Cyberpunk Sport.</p>
+    </footer>
+
+    <!-- Script de interacciones -->
+    <script>
+        // Función para aplicar "Fade in" a los elementos cuando se hace scroll hacia abajo
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100;
+                
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        
+        window.addEventListener("scroll", reveal);
+        // Lanzamos la función al inicio para mostrar el contenido que ya está en pantalla
+        setTimeout(reveal, 100);
+    </script>
 </body>
 </html>
+
